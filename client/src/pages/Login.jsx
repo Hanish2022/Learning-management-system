@@ -17,6 +17,7 @@ import {
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   // State variables for handling inputs
@@ -48,6 +49,8 @@ const Login = () => {
     },
   ] = useLoginUserMutation();
 
+
+  const navigate = useNavigate();
   // Input change handler
   const changeInputHandler = (e, type) => {
     const { name, value } = e.target;
@@ -82,6 +85,7 @@ const Login = () => {
     // Success for login
     if (loginIsSuccess && loginData) {
       toast.success(loginData.message || "Login successful.");
+      navigate("/")
       // Optionally, redirect to a new page, e.g., navigate("/home");
     }
 
