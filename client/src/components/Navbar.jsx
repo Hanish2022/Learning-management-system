@@ -17,6 +17,7 @@ import {
   LayoutDashboard,
   Menu,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 // import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -80,12 +81,12 @@ const Navbar = () => {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
-                    <User />
-                    <span>My Learning</span>
+                    <Link to="my-learning">My Learning</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <CreditCard />
-                    <span>Edit Profile</span>
+                    
+                    <Link to="profile">Edit Profile</Link>
+                    
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuItem>
@@ -110,7 +111,7 @@ const Navbar = () => {
       {/* mobile*/}
       <div className="flex md:hidden items-center justify-between px-4 h-full">
         <h1 className="font-extrabold text-2xl">E-learning</h1>
-        <MobileNavbar  />
+        <MobileNavbar />
       </div>
     </div>
   );
