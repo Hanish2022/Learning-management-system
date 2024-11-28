@@ -10,14 +10,14 @@ const authSlice = createSlice({
     reducers: {
         userLoggedIn: (state, action) => {
             state.user = action.payload.user;//userLoggedIn({name : "hanish"})
-            isAuthenticated = true;
+            state.isAuthenticated = true;
         },
         userLoggedOut: (state, action) => {
             state.user = null;
-            isAuthenticated = false;
+            state.isAuthenticated = false;
         }
     }
 })
 
-export const { userLoggedIn, userLoggedOut } = authSlice.actions;
-export default authSlice.reducer;
+export const { userLoggedIn, userLoggedOut } = authSlice.actions;//slicers k functions ko indvidual export 
+export default authSlice.reducer;//store me dalne k liye pure slicer ko export
