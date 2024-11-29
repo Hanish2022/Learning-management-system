@@ -14,7 +14,7 @@ export const authApi = createApi({
   endpoints: (builder) => ({
     //builder is used for data fetching and data posting
     registerUser: builder.mutation(
-      //for data posting
+      //for data posting mutation
       {
         query: (inputData) => ({
           url: "register", //http://localhost:8080/api/v1/user/register
@@ -24,7 +24,7 @@ export const authApi = createApi({
       }
     ),
     loginUser: builder.mutation(
-      // for data fetching
+      
       {
         query: (inputData) => ({
           url: "login",
@@ -42,10 +42,21 @@ export const authApi = createApi({
         },
       }
     ),
+    loadUser: builder.query(
+    //get krne time query
+      {
+        query: () => ({
+          url: "profile",
+          method: "GET",
+        
+        }),
+      }
+    )
   }),
 });
 
 
 export const {
     useRegisterUserMutation,
-    useLoginUserMutation } = authApi
+  useLoginUserMutation,
+useLoadUserQuery} = authApi
