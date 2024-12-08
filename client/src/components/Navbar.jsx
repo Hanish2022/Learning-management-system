@@ -17,7 +17,7 @@ import {
   LayoutDashboard,
   Menu,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -49,10 +49,25 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import DarkMode from "@/DarkMode";
 import { Separator } from "@radix-ui/react-dropdown-menu";
+import { useLogoutUserMutation } from "@/features/api/authApi";
+import { useEffect } from "react";
+import { toast } from "sonner";
+import { useSelector } from "react-redux";
 // import DarkMode from "DarkMode.jsx"
 const Navbar = () => {
-    const user = true;
-   
+  const {user} =useSelector(store=>store.auth) ;
+  const [logoutUser, { data, isSuccess }] = useLogoutUserMutation();
+  const navigate=useNavigate()
+  const logoutHandler = async () => {
+     await logoutUser()
+   }
+  
+    useEffect(() => {
+      if (isSuccess) {
+        toast.success(data?.message || "User log out.");
+        navigate("/login");
+      }
+    }, [isSuccess]);
   return (
     <div className="h-16 dark:bg-[#020817] bg-white border-b dark:border-b-gray-800 border-b-gray-200 fixed top-0 left-0 right-0 duration-300 z-10">
       {/* desktop */}
@@ -70,7 +85,7 @@ const Navbar = () => {
               <DropdownMenuTrigger asChild>
                 <Avatar className="cursor-pointer">
                   <AvatarImage
-                    src="https://github.com/shadcn.png"
+                    src={user?.photoUrl||"https://github.com/shadcn.png"}
                     alt="@shadcn"
                   />
                   <AvatarFallback>CN</AvatarFallback>
@@ -91,18 +106,24 @@ const Navbar = () => {
                 </DropdownMenuGroup>
                 <DropdownMenuItem>
                   <LogOut />
-                  <span>Log out</span>
+                  <span onClick={logoutHandler}>Log out</span>
                 </DropdownMenuItem>
+                {
+                  user.role === 'instructor' && (
+                    <>
                 <DropdownMenuItem>
                   <LayoutDashboard />
                   <span>Dashboard</span>
                 </DropdownMenuItem>
+                    </>
+                  )
+                }
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="outline">Signup</Button>
-              <Button>Login</Button>
+              <Button variant="outline" onClick={()=>navigate("/login")}>Signup</Button>
+              <Button onClick={()=>navigate("/login")}>Login</Button>
             </div>
           )}
           <DarkMode />

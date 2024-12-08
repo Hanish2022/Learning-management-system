@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import { userLoggedIn } from "../authSlice";
+import { userLoggedIn, userLoggedOut } from "../authSlice";
 
 
 const USER_API="http://localhost:8080/api/v1/user/"
@@ -23,18 +23,46 @@ export const authApi = createApi({
         }),
       }
     ),
-    loginUser: builder.mutation(
-      
+    loginUser: builder.mutation({
+      query: (inputData) => ({
+        url: "login",
+        method: "POST",
+        body: inputData,
+      }),
+      //when a user login we will dispatch action for it we make this async func
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          const result = await queryFulfilled; //query fullfilled me sara data hoga user ka
+          dispatch(userLoggedIn({ user: result.data.user }));
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    }),
+    logoutUser: builder.mutation({
+      query: () => ({
+        url: "logout",
+        method: "GET",
+      }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          // const result = await queryFulfilled; //query fullfilled me sara data hoga user ka
+          dispatch(userLoggedOut());
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    }),
+    loadUser: builder.query(
+      //get krne time query
       {
-        query: (inputData) => ({
-          url: "login",
-          method: "POST",
-          body: inputData,
-            }),
-          //when a user login we will dispatch action for it we make this async func
+        query: () => ({
+          url: "profile",
+          method: "GET",
+        }),
         async onQueryStarted(arg, { queryFulfilled, dispatch }) {
           try {
-            const result = await queryFulfilled;//query fullfilled me sara data hoga user ka
+            const result = await queryFulfilled; //query fullfilled me sara data hoga user ka
             dispatch(userLoggedIn({ user: result.data.user }));
           } catch (error) {
             console.log(error);
@@ -42,16 +70,14 @@ export const authApi = createApi({
         },
       }
     ),
-    loadUser: builder.query(
-    //get krne time query
-      {
-        query: () => ({
-          url: "profile",
-          method: "GET",
-        
-        }),
-      }
-    )
+    updateUser: builder.mutation({
+      query: (formData) => ({
+        url: "profile/update",
+        method: "PUT",
+        body: formData,
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
@@ -59,4 +85,6 @@ export const authApi = createApi({
 export const {
     useRegisterUserMutation,
   useLoginUserMutation,
-useLoadUserQuery} = authApi
+  useLoadUserQuery,
+  useUpdateUserMutation,
+useLogoutUserMutation} = authApi
