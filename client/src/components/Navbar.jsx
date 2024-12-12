@@ -108,16 +108,14 @@ const Navbar = () => {
                   <LogOut />
                   <span onClick={logoutHandler}>Log out</span>
                 </DropdownMenuItem>
-                {
-                  user.role === 'instructor' && (
+                
                     <>
                 <DropdownMenuItem>
                   <LayoutDashboard />
                   <span>Dashboard</span>
                 </DropdownMenuItem>
                     </>
-                  )
-                }
+                
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (

@@ -53,7 +53,7 @@ export const authApi = createApi({
         }
       },
     }),
-    loadUser: builder.query(
+    loadUser: builder.query(//for fetching profile
       //get krne time query
       {
         query: () => ({

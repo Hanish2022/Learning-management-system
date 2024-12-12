@@ -59,7 +59,7 @@ const Profile = () => {
     refetch();
   }, []);
 
-  useEffect(() => {
+  useEffect(() => { 
     if (isSuccess) {
       refetch();
       toast.success(data.message || "Profile updated.");
