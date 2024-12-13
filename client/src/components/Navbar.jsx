@@ -86,7 +86,7 @@ const Navbar = () => {
                 <Avatar className="cursor-pointer">
                   <AvatarImage
                     src={user?.photoUrl||"https://github.com/shadcn.png"}
-                    alt="@shadcn"
+                    alt="nothing"
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>

@@ -15,6 +15,7 @@ export const courseApi = createApi({
         body: { courseTitle, category },
       }),
     }),
+    //oicjasi
   }),
 });
 
