@@ -8,7 +8,7 @@ export const generateToken = (res, user, message) => {
         maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: "strict",
+        sameSite: "lax",
       })
       .json({
         success: true,

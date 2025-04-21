@@ -16,20 +16,16 @@ import React, { useEffect, useState } from "react";
 import Course from "./Course";
 import {
   useLoadUserQuery, useUpdateUserMutation,
-  // useUpdateUserMutation,
 } from "@/features/api/authApi";
 import { toast } from "sonner";
 
 const Profile = () => {
-    // const isLoading = false;
   const enrolledCourses = [1, 2, 3, 4, 5, 6]
   
-  const { data, isLoading,refetch } = useLoadUserQuery()
-  console.log(data);
+  const { data, isLoading, error: loadError, refetch } = useLoadUserQuery()
   const [name, setName] = useState("");
   const [profilePhoto, setProfilePhoto] = useState("");
 
-//   const { data, isLoading, refetch } = useLoadUserQuery();
   const [
     updateUser,
     {
@@ -40,8 +36,6 @@ const Profile = () => {
       isSuccess,
     },
   ] = useUpdateUserMutation();
-
-//   console.log(data);
 
   const onChangeHandler = (e) => {
     const file = e.target.files?.[0];
@@ -62,18 +56,38 @@ const Profile = () => {
   useEffect(() => { 
     if (isSuccess) {
       refetch();
-      toast.success(data.message || "Profile updated.");
+      toast.success(data?.message || "Profile updated.");
     }
     if (isError) {
-      toast.error(error.message || "Failed to update profile");
+      toast.error(error?.message || "Failed to update profile");
     }
   }, [error, updateUserData, isSuccess, isError]);
 
-  if (isLoading) return <h1>Profile Loading...</h1>;
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
 
-  const user = data && data.user ;//data se user mil jayega
+  if (loadError) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p className="text-red-500">Failed to load profile. Please try again later.</p>
+      </div>
+    );
+  }
 
-  console.log(user);
+  if (!data?.user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p>No user data available. Please login again.</p>
+      </div>
+    );
+  }
+
+  const user = data.user;
 
   return (
     <div className="max-w-4xl mx-auto px-4 my-24">
@@ -82,10 +96,10 @@ const Profile = () => {
         <div className="flex flex-col items-center">
           <Avatar className="h-24 w-24 md:h-32 md:w-32 mb-4">
             <AvatarImage
-              src={user.photoUrl || "https://github.com/shadcn.png"}
-              alt="@shadcn"
+              src={user?.photoUrl || "https://github.com/shadcn.png"}
+              alt={user?.name || "User"}
             />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
           </Avatar>
         </div>
         <div>
@@ -93,7 +107,7 @@ const Profile = () => {
             <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
               Name:
               <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-                {user.name}
+                {user?.name || "Not set"}
               </span>
             </h1>
           </div>
@@ -101,7 +115,7 @@ const Profile = () => {
             <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
               Email:
               <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-                {user.email}
+                {user?.email || "Not set"}
               </span>
             </h1>
           </div>
@@ -109,7 +123,7 @@ const Profile = () => {
             <h1 className="font-semibold text-gray-900 dark:text-gray-100 ">
               Role:
               <span className="font-normal text-gray-700 dark:text-gray-300 ml-2">
-                {user.role.toUpperCase()}
+                {user?.role?.toUpperCase() || "Not set"}
               </span>
             </h1>
           </div>

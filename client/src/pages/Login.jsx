@@ -18,8 +18,13 @@ import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
+import { useDispatch } from "react-redux";
+import { userLoggedIn } from "@/features/authSlice";
 
 const Login = () => {
+  const dispatch = useDispatch();
   // State variables for handling inputs
   const [signupInput, setSignupInput] = useState({
     name: "",
@@ -102,6 +107,44 @@ const Login = () => {
     loginError,
   ]);
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      // Decode the JWT token to get user info
+      const decoded = jwtDecode(credentialResponse.credential);
+      console.log('Google response:', decoded);
+      
+      // Send the user info to your backend
+      const response = await fetch('http://localhost:8080/api/v1/user/google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Important: include credentials to handle cookies
+        body: JSON.stringify({
+          email: decoded.email,
+          name: decoded.name,
+          picture: decoded.picture,
+          googleId: decoded.sub
+        }),
+      });
+      
+      const data = await response.json();
+      console.log('Google auth response:', data);
+      
+      if (data.success) {
+        // Dispatch user information to Redux store
+        dispatch(userLoggedIn({ user: data.user }));
+        toast.success('Google login successful');
+        navigate('/');
+      } else {
+        toast.error(data.message || 'Google login failed');
+      }
+    } catch (error) {
+      console.error('Google login error:', error);
+      toast.error('Failed to authenticate with Google');
+    }
+  };
+
   return (
     <div className="flex items-center w-full justify-center mt-20">
       <Tabs defaultValue="signup" className="w-[400px]">
@@ -161,8 +204,8 @@ const Login = () => {
                   />
                 </div>
               </CardContent>
-              <CardFooter>
-                <Button disabled={registerIsLoading} type="submit">
+              <CardFooter className="flex flex-col gap-4">
+                <Button disabled={registerIsLoading} type="submit" className="w-full">
                   {registerIsLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
@@ -172,6 +215,28 @@ const Login = () => {
                     "Signup"
                   )}
                 </Button>
+                <div className="relative w-full">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">
+                      Or continue with
+                    </span>
+                  </div>
+                </div>
+                <div className="flex justify-center w-full">
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => {
+                      toast.error('Google login failed');
+                    }}
+                    useOneTap={false}
+                    theme="filled_blue"
+                    size="large"
+                    width="300"
+                  />
+                </div>
               </CardFooter>
             </form>
           </Card>
@@ -217,8 +282,8 @@ const Login = () => {
                   />
                 </div>
               </CardContent>
-              <CardFooter>
-                <Button disabled={loginIsLoading} type="submit">
+              <CardFooter className="flex flex-col gap-4">
+                <Button disabled={loginIsLoading} type="submit" className="w-full">
                   {loginIsLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
@@ -228,6 +293,28 @@ const Login = () => {
                     "Login"
                   )}
                 </Button>
+                <div className="relative w-full">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">
+                      Or continue with
+                    </span>
+                  </div>
+                </div>
+                <div className="flex justify-center w-full">
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => {
+                      toast.error('Google login failed');
+                    }}
+                    useOneTap={false}
+                    theme="filled_blue"
+                    size="large"
+                    width="300"
+                  />
+                </div>
               </CardFooter>
             </form>
           </Card>

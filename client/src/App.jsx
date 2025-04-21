@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 import Login from './pages/Login'
 import Navbar from './components/Navbar'
 import HeroSection from './pages/student/HeroSection'
@@ -68,9 +69,11 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <main>
-    <RouterProvider router={appRouter}/>
-    </main>
+    <GoogleOAuthProvider clientId="247653186010-b9fe9cjhi7luljuodmbieuk13dejru0i.apps.googleusercontent.com">
+      <main>
+        <RouterProvider router={appRouter}/>
+      </main>
+    </GoogleOAuthProvider>
   )
 }
 

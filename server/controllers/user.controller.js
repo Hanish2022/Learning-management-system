@@ -151,3 +151,33 @@ export const updateProfile = async (req, res) => {
     }
 }
 
+export const googleAuth = async (req, res) => {
+  try {
+    const { email, name, picture, googleId } = req.body;
+
+    // Check if user exists
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      // Create new user if doesn't exist
+      const hashedPassword = await bcrypt.hash(Math.random().toString(36).slice(-8), 10);
+      user = await User.create({
+        name,
+        email,
+        photoUrl: picture,
+        googleId,
+        password: hashedPassword,
+      });
+    }
+
+    // Generate token using the utility function
+    return generateToken(res, user, "Google login successful");
+  } catch (error) {
+    console.error("Google auth error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to authenticate with Google",
+    });
+  }
+};
+

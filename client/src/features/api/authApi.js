@@ -9,6 +9,10 @@ export const authApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: USER_API,
     credentials: "include",
+    prepareHeaders: (headers) => {
+      // Add any custom headers if needed
+      return headers;
+    },
   }),
   //Endpoints are just a set of operations that you want to perform against your server.
   endpoints: (builder) => ({

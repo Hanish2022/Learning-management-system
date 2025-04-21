@@ -27,9 +27,11 @@ const userSchema = new mongoose.Schema({
     photoUrl: {
         type: String,
         default:""
+    },
+    googleId: {
+        type: String,
+        sparse: true
     }
-
-
 }, { timestamps: true });
 
 export const User = mongoose.model('User', userSchema);
