@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 
-const isAuthenticated = async (req, res,next) => {
+const isAuthenticated = async (req, res, next) => {
     try {
       const token = req.cookies.token;
       if (!token) {
@@ -9,17 +9,21 @@ const isAuthenticated = async (req, res,next) => {
           success: false,
         });
       }
-      const decode = await jwt.verify(token, process.env.SECRET_KEY);
+      const decode = jwt.verify(token, process.env.SECRET_KEY);
       if (!decode) {
         return res.status(401).json({
           message: "Invalid token",
           success: false,
         });
       }
-        req.id = decode.userId; //from generateToken.js   userId: user._id
-        next();
+      req.id = decode.userId; //from generateToken.js   userId: user._id
+      next();
     } catch (error) {
-        console.log("error in isAuthenticated middleware",error);
+        console.log("error in isAuthenticated middleware", error);
+        return res.status(401).json({
+          message: "Authentication failed",
+          success: false,
+        });
     }
 }
 
