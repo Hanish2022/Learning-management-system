@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { MessageSquare, X } from 'lucide-react';
+import { useSelector } from 'react-redux';
 
 const systemPrompt = `You are an AI-powered learning path assistant integrated into a Learning Management System. Your job is to analyze a user's current skills and suggest:
 
@@ -81,6 +82,7 @@ Response:
 Arre bro chill, H-BOT is your dost not your faculty! Just tell me what skills excite you and I'll suggest something solid.`;
 
 const Chatbot = () => {
+  const { isAuthenticated } = useSelector(store => store.auth);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
     { role: 'assistant', content: 'I am The H-BOT! Hoping that your college journey at CHITKARA is going great, I am here to help you out with some innovative ideas based on your skills, so tell me some of your skills that excite you?' }
@@ -132,6 +134,8 @@ const Chatbot = () => {
       setIsLoading(false);
     }
   };
+
+  if (!isAuthenticated) return null;
 
   return (
     <>
