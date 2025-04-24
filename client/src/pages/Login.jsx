@@ -114,7 +114,7 @@ const Login = () => {
       console.log('Google response:', decoded);
       
       // Send the user info to your backend
-      const response = await fetch('http://localhost:8080/api/v1/user/google', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/user/google`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
